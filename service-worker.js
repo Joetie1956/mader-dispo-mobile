@@ -1,10 +1,10 @@
 const CACHE_NAME =
-    "mader-mobile-v1";
+    "mader-mobile-v2";
 
 const DATEIEN = [
-    "/mobile/",
-    "/mobile/index.html",
-    "/mobile/manifest.json"
+    "./",
+    "./index.html",
+    "./manifest.json"
 ];
 
 self.addEventListener(
