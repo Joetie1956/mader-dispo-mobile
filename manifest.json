@@ -1,0 +1,9 @@
+{
+  "name": "Mader Disposition Mobile",
+  "short_name": "Mader Dispo",
+  "start_url": "/mobile/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#333333",
+  "lang": "de"
+}
