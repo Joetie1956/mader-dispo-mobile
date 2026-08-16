@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mader Disposition Mobile</title>
+
+    <link rel="manifest" href="/mobile/manifest.json">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f2f2;
+            color: #222;
+        }
+
+        .mobile-app {
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+        }
+
+        .kopf {
+            background: #333;
+            color: white;
+            padding: 14px 16px;
+        }
+
+        .kopf h1 {
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .benutzer {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .datum {
+    padding: 10px 12px;
+    background: #e6e6e6;
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.datum button {
+    height: 42px;
+    font-size: 20px;
+    cursor: pointer;
+}
+        .navigation {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 10px;
+            background: #fafafa;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .navigation button {
+            padding: 12px 5px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .navigation button.aktiv {
+    background: #333;
+    color: white;
+    border-color: #333;
+    font-weight: bold;
+}
+
+        .inhalt {
+            padding: 12px;
+        }
+
+        .bereich {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            background: white;
+        }
+
+        .bereich h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .hinweis {
+            background: #fff3cd;
+            border: 1px solid #e6d28a;
+        }
+
+    @media (max-width: 1200px) {
+
+    body {
+        font-size: 12px;
+    }
+
+    .mobile-app {
+        width: 100%;
+        max-width: none;
+    }
+
+    .kopf {
+        padding: 6px 8px;
+    }
+
+    .kopf h1 {
+        font-size: 16px;
+    }
+
+    .benutzer {
+        margin-top: 3px;
+        font-size: 11px;
+    }
+
+    .datum {
+        grid-template-columns: 34px 1fr 34px;
+        gap: 4px;
+        padding: 5px 6px;
+        font-size: 13px;
+    }
+
+    .datum button {
+        height: 30px;
+        padding: 0;
+        font-size: 14px;
+    }
+
+    .navigation {
+        gap: 3px;
+        padding: 4px;
+    }
+
+    .navigation button {
+        min-height: 32px;
+        padding: 5px 2px;
+        font-size: 10px;
+        border-radius: 4px;
+    }
+
+    .inhalt {
+        padding: 4px;
+    }
+
+    .bereich {
+        padding: 4px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .bereich h2 {
+        margin: 0 0 5px 0;
+        font-size: 13px;
+    }
+
+#fahrerListe > div,
+#freieAuftraegeListe > div {
+    padding: 2px 0 !important;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+#fahrerListe strong {
+    font-size: 11px;
+}
+
+#fahrerListe div div {
+    margin-top: 1px;
+    padding-left: 8px;
+}
+
+    #btnHeute {
+        min-width: 70px;
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+
+    #datumAuswahl {
+        padding: 6px !important;
+        font-size: 13px !important;
+    }
+
+    #btnDatumUebernehmen {
+        margin-top: 5px !important;
+        padding: 7px !important;
+        font-size: 12px !important;
+    }
+
+    .hinweis {
+        font-size: 11px;
+    }
+}
+
+.freierAuftrag {
+    padding: 7px 8px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+.freierAuftragInfo {
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.freierAuftragInfo {
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.freierAuftrag.offline {
+    border-left: 4px solid #cc8800;
+}
+
+.freierAuftragText {
+    font-size: 12px;
+    line-height: 1.2;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="mobile-app">
+
+    <header class="kopf">
+        <h1>Mader Dispo:  Sattel / Motorwagen</h1>
+
+        <div class="benutzer" id="benutzerAnzeige">
+               Benutzer: - </div>
+       
+    </header>
+
+         <div class="datum">
+
+    <button type="button" id="btnZurueck">
+        ◀
+    </button>
+
+    <div id="datumAnzeige">
+        Tagesdispo
+    </div>
+
+    <button type="button" id="btnWeiter">
+        ▶
+    </button>
+
+</div>
+
+<div style="text-align:center; padding:8px;">
+    <button type="button" id="btnHeute">
+        Heute
+    </button>
+</div>
+
+   <nav class="navigation">
+    <button type="button" id="btnTagesdispo">
+        Tagesdispo
+    </button>
+
+    <button type="button" id="btnFreieAuftraege">
+        Freie Aufträge
+    </button>
+
+   <button type="button" id="btnKalender">
+    Kalender
+</button>
+
+    <main class="inhalt">
+
+       <section class="bereich" id="bereichTagesdispo">
+    <h2>Fahrer und Aufträge</h2>
+
+    <div id="fahrerListe">
+        Wird geladen...
+    </div>
+</section>
+
+  <section class="bereich" id="bereichFreieAuftraege">
+    <h2>Freie Aufträge</h2>
+
+    <button
+        type="button"
+        id="btnNeuerAuftrag"
+        style="
+            width:100%;
+            padding:8px;
+            margin-bottom:8px;
+            font-size:12px;
+        "
+    >
+        + Neuer Auftrag
+    </button>
+
+    <div id="freieAuftraegeListe">
+        Wird geladen...
+    </div>
+</section>
+
+<section class="bereich" id="bereichKalender" style="display:none;">
+    <h2>Kalender / Datum wählen</h2>
+
+    <input
+        type="date"
+        id="datumAuswahl"
+        style="
+            width:100%;
+            padding:12px;
+            font-size:18px;
+        "
+    >
+
+    <button
+        type="button"
+        id="btnDatumUebernehmen"
+        style="
+            width:100%;
+            margin-top:10px;
+            padding:12px;
+            font-size:16px;
+        "
+    >
+        Datum übernehmen
+    </button>
+</section>
+
+        <section class="bereich hinweis">
+            <h2>Hinweise</h2>
+            <p>Keine neuen Hinweise.</p>
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+   let gespeicherterBenutzer =
+    localStorage.getItem(
+        "mader_dispo_benutzername"
+    ) || "";
+
+if (!gespeicherterBenutzer.trim()) {
+
+    const eingabe =
+        prompt(
+            "Bitte Benutzername eingeben:"
+        ) || "";
+
+    gespeicherterBenutzer =
+        eingabe.trim();
+
+    if (gespeicherterBenutzer) {
+
+        localStorage.setItem(
+            "mader_dispo_benutzername",
+            gespeicherterBenutzer
+        );
+    }
+}
+
+document
+    .getElementById(
+        "benutzerAnzeige"
+    )
+    .textContent =
+        "Benutzer: " +
+        (
+            gespeicherterBenutzer ||
+            "Unbekannt"
+        );
+
+    let heute = new Date();
+
+    const MOBILE_AUFTRAEGE_SPEICHER =
+    "mader_mobile_offline_auftraege_v1";
+
+    const MOBILE_SERVER_CACHE =
+    "mader_mobile_server_auftraege_cache_v1";
+
+    function ladeLokaleAuftraege() {
+
+    try {
+
+        const gespeichert =
+            localStorage.getItem(
+                MOBILE_AUFTRAEGE_SPEICHER
+            );
+
+        if (!gespeichert) {
+            return [];
+        }
+
+        const daten =
+            JSON.parse(
+                gespeichert
+            );
+
+        return Array.isArray(daten)
+            ? daten
+            : [];
+
+    } catch (fehler) {
+
+        console.error(
+            "Lokale Aufträge konnten nicht gelesen werden:",
+            fehler
+        );
+
+        return [];
+    }
+}
+
+function speichereLokaleAuftraege(
+    auftraege
+) {
+
+    localStorage.setItem(
+        MOBILE_AUFTRAEGE_SPEICHER,
+        JSON.stringify(
+            auftraege
+        )
+    );
+}
+
+function ladeServerCache() {
+
+    try {
+
+        const gespeichert =
+            localStorage.getItem(
+                MOBILE_SERVER_CACHE
+            );
+
+        if (!gespeichert) {
+            return {};
+        }
+
+        const daten =
+            JSON.parse(
+                gespeichert
+            );
+
+        return (
+            daten &&
+            typeof daten === "object" &&
+            !Array.isArray(daten)
+        )
+            ? daten
+            : {};
+
+    } catch (fehler) {
+
+        return {};
+    }
+}
+
+
+function speichereServerCache(
+    datum,
+    auftraege
+) {
+
+    const cache =
+        ladeServerCache();
+
+    cache[datum] =
+        Array.isArray(auftraege)
+            ? auftraege
+            : [];
+
+    localStorage.setItem(
+        MOBILE_SERVER_CACHE,
+        JSON.stringify(cache)
+    );
+}
+
+function erzeugeMobileId() {
+
+    if (
+        window.crypto &&
+        typeof crypto.randomUUID === "function"
+    ) {
+        return crypto.randomUUID();
+    }
+
+    return (
+        "mobile-" +
+        Date.now() +
+        "-" +
+        Math.random()
+            .toString(16)
+            .slice(2)
+    );
+}
+
+function neuerLokalerAuftrag() {
+
+    const text =
+        prompt(
+            "Auftrag eingeben:"
+        );
+
+    if (text === null) {
+        return;
+    }
+
+    const sauber =
+        text.trim();
+
+    if (!sauber) {
+        return;
+    }
+
+    const jahr =
+        heute.getFullYear();
+
+    const monat =
+        String(
+            heute.getMonth() + 1
+        ).padStart(2, "0");
+
+    const tag =
+        String(
+            heute.getDate()
+        ).padStart(2, "0");
+
+    const datum =
+        `${jahr}-${monat}-${tag}`;
+
+    const auftraege =
+        ladeLokaleAuftraege();
+
+    auftraege.push({
+        id:
+    erzeugeMobileId(),
+
+        datum:
+            datum,
+
+        auftrag:
+            sauber,
+
+        ersteller:
+            gespeicherterBenutzer,
+
+        offline:
+            true
+    });
+
+    speichereLokaleAuftraege(
+        auftraege
+    );
+
+    zeigeLokaleAuftraege();
+}
+
+async function synchronisiereLokaleAuftraege() {
+
+    const lokaleAuftraege =
+        ladeLokaleAuftraege();
+
+    if (lokaleAuftraege.length === 0) {
+        return;
+    }
+
+    const nochOffen = [];
+
+    for (const auftrag of lokaleAuftraege) {
+
+        try {
+
+            const antwort =
+                await fetch(
+                    "/api/freie-auftraege",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                datum:
+                                    auftrag.datum,
+
+                                auftrag: {
+                                    id:
+                                        auftrag.id,
+
+                                    info:
+                                        auftrag.info || "",
+
+                                    auftrag:
+                                        auftrag.auftrag || "",
+
+                                    ersteller:
+                                        auftrag.ersteller || ""
+                                }
+                            })
+                    }
+                );
+
+            if (!antwort.ok) {
+
+                nochOffen.push(
+                    auftrag
+                );
+            }
+
+        } catch (fehler) {
+
+            nochOffen.push(
+                auftrag
+            );
+        }
+    }
+
+    speichereLokaleAuftraege(
+        nochOffen
+    );
+}
+
+function zeigeLokaleAuftraege() {
+
+    const liste =
+        document.getElementById(
+            "freieAuftraegeListe"
+        );
+
+    const jahr =
+        heute.getFullYear();
+
+    const monat =
+        String(
+            heute.getMonth() + 1
+        ).padStart(2, "0");
+
+    const tag =
+        String(
+            heute.getDate()
+        ).padStart(2, "0");
+
+    const datum =
+        `${jahr}-${monat}-${tag}`;
+
+    const auftraege =
+        ladeLokaleAuftraege()
+            .filter(
+                (auftrag) =>
+                    auftrag.datum === datum
+            );
+
+    auftraege.forEach(
+        (auftrag) => {
+
+            const eintrag =
+                document.createElement(
+                    "div"
+                );
+
+            eintrag.className =
+    "freierAuftrag offline";
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+            info.className =
+                "freierAuftragInfo";
+
+           info.textContent =
+                "Nicht synchronisiert";
+
+            eintrag.appendChild(
+                info
+            );
+
+            const text =
+                document.createElement(
+                    "div"
+                );
+
+            text.className =
+                "freierAuftragText";
+
+            text.textContent =
+                auftrag.auftrag;
+
+            eintrag.appendChild(
+                text
+            );
+
+            liste.appendChild(
+                eintrag
+            );
+        }
+    );
+}
+
+    function zeigeDatum() {
+
+    const datumText =
+        heute.toLocaleDateString("de-DE", {
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+
+    document.getElementById("datumAnzeige").textContent =
+        datumText;
+}
+
+        async function testeServerVerbindung() {
+
+    const jahr = heute.getFullYear();
+
+    const monat =
+        String(heute.getMonth() + 1)
+            .padStart(2, "0");
+
+    const tag =
+        String(heute.getDate())
+            .padStart(2, "0");
+
+    const datum =
+        `${jahr}-${monat}-${tag}`;
+
+    try {
+
+        const antwort =
+            await fetch(
+                "/api/freie-auftraege?datum=" +
+                encodeURIComponent(datum)
+            );
+
+        if (!antwort.ok) {
+
+            document.querySelector(".hinweis p").textContent =
+                "Server antwortet, aber der Abruf ist fehlgeschlagen.";
+
+            return;
+        }
+
+        const daten =
+            await antwort.json();
+
+         speichereServerCache(
+    datum,
+    daten.auftraege
+);   
+
+        const anzahl =
+    Array.isArray(daten.auftraege)
+        ? daten.auftraege.length
+        : 0;
+
+       const liste =
+    document.getElementById(
+        "freieAuftraegeListe"
+    );
+
+liste.innerHTML = "";
+
+if (
+    Array.isArray(daten.auftraege) &&
+    daten.auftraege.length > 0
+) {
+
+    daten.auftraege.forEach(
+        (auftrag) => {
+
+           const eintrag =
+    document.createElement("div");
+
+eintrag.className =
+    "freierAuftrag";
+
+if (auftrag.info) {
+
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "freierAuftragInfo";
+
+    info.textContent =
+        auftrag.info;
+
+    eintrag.appendChild(
+        info
+    );
+}
+
+const text =
+    document.createElement("div");
+
+text.className =
+    "freierAuftragText";
+
+text.textContent =
+    auftrag.auftrag || "";
+
+eintrag.appendChild(
+    text
+);
+
+liste.appendChild(
+    eintrag
+);
+        }
+    );
+
+} else {
+
+    liste.textContent =
+        "Keine freien Aufträge für diesen Tag.";
+} 
+
+document.querySelector(".hinweis p").textContent =
+    "Serververbindung erfolgreich. Freie Aufträge heute: " +
+    anzahl;
+
+await synchronisiereLokaleAuftraege();
+
+const nochNichtSynchronisiert =
+    ladeLokaleAuftraege();
+
+if (nochNichtSynchronisiert.length === 0) {
+
+    document.querySelector(".hinweis p").textContent =
+        "Server verbunden. Offline-Aufträge synchronisiert.";
+}
+
+zeigeLokaleAuftraege();
+
+        console.log(
+            "Mobile Server-Test:",
+            daten
+        );
+
+    } catch (fehler) {
+
+    document.querySelector(".hinweis p").textContent =
+        "Offline - letzter gespeicherter Stand.";
+
+    const cache =
+        ladeServerCache();
+
+    const auftraege =
+        Array.isArray(cache[datum])
+            ? cache[datum]
+            : [];
+
+    const liste =
+        document.getElementById(
+            "freieAuftraegeListe"
+        );
+
+    liste.innerHTML = "";
+
+    auftraege.forEach(
+        (auftrag) => {
+
+            const eintrag =
+                document.createElement(
+                    "div"
+                );
+
+            eintrag.className =
+                "freierAuftrag";
+
+            if (auftrag.info) {
+
+                const info =
+                    document.createElement(
+                        "div"
+                    );
+
+                info.className =
+                    "freierAuftragInfo";
+
+                info.textContent =
+                    auftrag.info;
+
+                eintrag.appendChild(
+                    info
+                );
+            }
+
+            const text =
+                document.createElement(
+                    "div"
+                );
+
+            text.className =
+                "freierAuftragText";
+
+            text.textContent =
+                auftrag.auftrag || "";
+
+            eintrag.appendChild(
+                text
+            );
+
+            liste.appendChild(
+                eintrag
+            );
+        }
+    );
+
+    zeigeLokaleAuftraege();
+
+    console.error(
+        "Mobile Server-Test fehlgeschlagen:",
+        fehler
+    );
+}
+}
+
+async function ladeFahrerUndDispo() {
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    const jahr = heute.getFullYear();
+
+    const monat =
+        String(heute.getMonth() + 1)
+            .padStart(2, "0");
+
+    const tag =
+        String(heute.getDate())
+            .padStart(2, "0");
+
+    const datum =
+        `${jahr}-${monat}-${tag}`;
+
+    const fahrerListe =
+        document.getElementById(
+            "fahrerListe"
+        );
+
+    try {
+
+        const stammdatenAntwort =
+            await fetch(
+                "/api/stammdaten"
+            );
+
+        const dispoAntwort =
+            await fetch(
+                "/api/dispo-tagesdaten?datum=" +
+                encodeURIComponent(datum)
+            );
+
+        if (
+            !stammdatenAntwort.ok ||
+            !dispoAntwort.ok
+        ) {
+
+            fahrerListe.textContent =
+                "Fahrerdaten konnten nicht geladen werden.";
+
+            return;
+        }
+
+        const stammdatenErgebnis =
+            await stammdatenAntwort.json();
+
+        const dispoErgebnis =
+            await dispoAntwort.json();
+
+        const stammdaten =
+            stammdatenErgebnis.daten || {};
+
+        const dispo =
+            Array.isArray(dispoErgebnis.dispo)
+                ? dispoErgebnis.dispo
+                : [];
+
+        fahrerListe.innerHTML = "";
+
+        const zeilen =
+            stammdaten.zeilen || {};
+
+     const fahrerZeilen = [];
+
+Object.keys(zeilen)
+    .sort(
+        (a, b) =>
+            Number(a) - Number(b)
+    )
+    .forEach(
+        (zeilenNummer) => {
+
+            const historie =
+                zeilen[zeilenNummer];
+
+            const fahrerHistorie =
+                historie.fahrer || {};
+
+            const gueltigeDaten =
+                Object.keys(fahrerHistorie)
+                    .filter(
+                        (d) =>
+                            d <= datum
+                    )
+                    .sort();
+
+            if (gueltigeDaten.length === 0) {
+                return;
+            }
+
+            const letztesDatum =
+                gueltigeDaten[
+                    gueltigeDaten.length - 1
+                ];
+
+            const fahrer =
+                fahrerHistorie[
+                    letztesDatum
+                ] || "";
+
+            if (!fahrer.trim()) {
+                return;
+            }
+
+            fahrerZeilen.push({
+                index: Number(zeilenNummer),
+                name: fahrer.trim()
+            });
+        }
+    );
+
+
+fahrerZeilen.forEach(
+    (fahrerEintrag, position) => {
+
+        const startIndex =
+            fahrerEintrag.index;
+
+        const endeIndex =
+            position < fahrerZeilen.length - 1
+                ? fahrerZeilen[position + 1].index - 1
+                : dispo.length - 1;
+
+        const auftraege = [];
+
+        for (
+            let i = startIndex;
+            i <= endeIndex;
+            i++
+        ) {
+
+            const auftrag =
+                String(
+                    dispo[i] || ""
+                ).trim();
+
+            if (auftrag) {
+                auftraege.push(auftrag);
+            }
+        }
+
+        const eintrag =
+            document.createElement("div");
+
+        eintrag.style.padding =
+            "10px 0";
+
+        eintrag.style.borderBottom =
+            "1px solid #ddd";
+
+        const name =
+            document.createElement("strong");
+
+        name.textContent =
+            fahrerEintrag.name;
+
+        eintrag.appendChild(name);
+
+        if (auftraege.length === 0) {
+
+            const leer =
+                document.createElement("div");
+
+            leer.textContent =
+                "Kein Auftrag";
+
+            eintrag.appendChild(leer);
+
+        } else {
+
+            auftraege.forEach(
+                (auftrag) => {
+
+                    const zeile =
+                        document.createElement("div");
+
+                    zeile.textContent =
+                        auftrag;
+
+                    eintrag.appendChild(zeile);
+                }
+            );
+        }
+
+        fahrerListe.appendChild(
+            eintrag
+        );
+    }
+);
+
+
+
+    } catch (fehler) {
+
+        fahrerListe.textContent =
+            "Server nicht erreichbar.";
+
+        console.error(
+            "Fahrer/Dispo konnten nicht geladen werden:",
+            fehler
+        );
+    }
+}
+
+document
+    .getElementById("btnZurueck")
+    .addEventListener(
+        "click",
+        () => {
+
+            heute.setDate(
+                heute.getDate() - 1
+            );
+
+            zeigeDatum();
+
+            testeServerVerbindung();
+            ladeFahrerUndDispo();
+        }
+    );
+
+
+document
+    .getElementById("btnWeiter")
+    .addEventListener(
+        "click",
+        () => {
+
+            heute.setDate(
+                heute.getDate() + 1
+            );
+
+            zeigeDatum();
+
+            testeServerVerbindung();
+            ladeFahrerUndDispo();
+        }
+    );
+
+
+document
+    .getElementById("btnHeute")
+    .addEventListener(
+        "click",
+        () => {
+
+            heute =
+                new Date();
+
+            zeigeDatum();
+
+            testeServerVerbindung();
+            ladeFahrerUndDispo();
+        }
+    );
+
+    function zeigeTagesdispoBereich() {
+
+         setzeAktivenButton(
+        "btnTagesdispo"
+    );
+
+    document.getElementById(
+        "bereichTagesdispo"
+    ).style.display =
+        "block";
+
+    document.getElementById(
+        "bereichFreieAuftraege"
+    ).style.display =
+        "none";
+
+      document.getElementById(
+    "bereichKalender"
+    ).style.display =
+    "none";  
+}
+
+
+function zeigeFreieAuftraegeBereich() {
+
+    setzeAktivenButton(
+    "btnFreieAuftraege"
+);
+
+    document.getElementById(
+        "bereichTagesdispo"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "bereichFreieAuftraege"
+    ).style.display =
+        "block";
+
+       document.getElementById(
+    "bereichKalender"
+    ).style.display =
+    "none"; 
+}
+
+function zeigeKalenderBereich() {
+
+    setzeAktivenButton(
+    "btnKalender"
+);
+
+    document.getElementById(
+        "bereichTagesdispo"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "bereichFreieAuftraege"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "bereichKalender"
+    ).style.display =
+        "block";
+
+
+    const jahr =
+        heute.getFullYear();
+
+    const monat =
+        String(
+            heute.getMonth() + 1
+        ).padStart(2, "0");
+
+    const tag =
+        String(
+            heute.getDate()
+        ).padStart(2, "0");
+
+    document.getElementById(
+        "datumAuswahl"
+    ).value =
+        `${jahr}-${monat}-${tag}`;
+}
+
+document
+    .getElementById(
+        "btnNeuerAuftrag"
+    )
+    .addEventListener(
+        "click",
+        neuerLokalerAuftrag
+    );
+
+
+document
+    .getElementById("btnTagesdispo")
+    .addEventListener(
+        "click",
+        zeigeTagesdispoBereich
+    );
+
+
+document
+    .getElementById("btnFreieAuftraege")
+    .addEventListener(
+        "click",
+        zeigeFreieAuftraegeBereich
+    );
+
+    document
+    .getElementById("btnKalender")
+    .addEventListener(
+        "click",
+        zeigeKalenderBereich
+    );
+
+    document
+    .getElementById("btnDatumUebernehmen")
+    .addEventListener(
+        "click",
+        () => {
+
+            const wert =
+                document.getElementById(
+                    "datumAuswahl"
+                ).value;
+
+            if (!wert) {
+                return;
+            }
+
+            const teile =
+                wert.split("-");
+
+            heute =
+                new Date(
+                    Number(teile[0]),
+                    Number(teile[1]) - 1,
+                    Number(teile[2])
+                );
+
+            zeigeDatum();
+
+            testeServerVerbindung();
+            ladeFahrerUndDispo();
+
+            zeigeTagesdispoBereich();
+        }
+    );
+
+    function setzeAktivenButton(buttonId) {
+
+    document
+        .querySelectorAll(".navigation button")
+        .forEach(
+            (button) => {
+                button.classList.remove("aktiv");
+            }
+        );
+
+    const aktiverButton =
+        document.getElementById(
+            buttonId
+        );
+
+    if (aktiverButton) {
+        aktiverButton.classList.add("aktiv");
+    }
+}
+
+    zeigeTagesdispoBereich();
+
+    zeigeDatum();
+
+testeServerVerbindung();
+ladeFahrerUndDispo();
+zeigeLokaleAuftraege();
+
+setInterval(
+    testeServerVerbindung,
+    10000
+);
+
+if ("serviceWorker" in navigator) {
+
+    navigator.serviceWorker
+        .register(
+            "/mobile/service-worker.js"
+        )
+        .then(
+            () => {
+                console.log(
+                    "Mobile Service Worker registriert."
+                );
+            }
+        )
+        .catch(
+            (fehler) => {
+                console.error(
+                    "Service Worker konnte nicht registriert werden:",
+                    fehler
+                );
+            }
+        );
+}
+
+
+</script>
+
+</body>
+
+</html>
